@@ -1,0 +1,53 @@
+# Makefile for pbmplus tools for 32 bit OS/2.
+#
+# Copyright (C) 1989, 1991 by Jef Poskanzer.
+# Modified for 32 bit OS/2 by Andy Key.
+#
+# Permission to use, copy, modify, and distribute this software and its
+# documentation for any purpose and without fee is hereby granted, provided
+# that the above copyright notice appear in all copies and that both that
+# copyright notice and this permission notice appear in supporting
+# documentation.  This software is provided "as is" without express or
+# implied warranty.
+
+# CONFIGURE: compiler IBM C-Set++ (or older IBM C-Set/2)
+CC =		icc
+
+# CONFIGURE: cc flags go here.
+#CFLAGS =	/DOS2 /W3 /G4 /Gd-e+m+ /Q+ /Sa /O+
+CFLAGS =	/DOS2 /W3 /G4 /Gd-e+m+ /Q+ /Sa /Ti+
+
+all:		lib
+
+# End of configurable definitions.
+
+MAKE =		nmake
+MFLAGS =	-f makefile.os2
+
+lib:
+		(cd pbm && $(MAKE) $(MFLAGS) "CC=$(CC)" "CFLAGS=$(CFLAGS)" lib)
+		copy pbm\pbm.h .
+		copy pbm\pbm.lib .
+		(cd pgm && $(MAKE) $(MFLAGS) "CC=$(CC)" "CFLAGS=$(CFLAGS)" lib)
+		copy pgm\pgm.h .
+		copy pgm\pgm.lib .
+		(cd ppm && $(MAKE) $(MFLAGS) "CC=$(CC)" "CFLAGS=$(CFLAGS)" lib)
+		copy ppm\ppm.h .
+		copy ppm\ppm.lib .
+		(cd pnm && $(MAKE) $(MFLAGS) "CC=$(CC)" "CFLAGS=$(CFLAGS)" lib)
+		copy pnm\pnm.h .
+		copy pnm\pnm.lib .
+
+clean:
+		(cd pbm && $(MAKE) $(MFLAGS) clean)
+		del pbm.h
+		del pbm.lib
+		(cd pgm && $(MAKE) $(MFLAGS) clean)
+		del pgm.h
+		del pgm.lib
+		(cd ppm && $(MAKE) $(MFLAGS) clean)
+		del ppm.h
+		del ppm.lib
+		(cd pnm && $(MAKE) $(MFLAGS) clean)
+		del pnm.h
+		del pnm.lib

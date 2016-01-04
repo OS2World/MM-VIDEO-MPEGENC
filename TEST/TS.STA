@@ -1,0 +1,49 @@
+MPEG ENCODER STATS
+------------------
+TIME STARTED:  Mon Aug  9 11:57:34 1993
+MACHINE:  bugs-bunny
+FIRST FILE:  ../test/ts/stennis.30.yuv
+LAST FILE:  ../test/ts/stennis.39.yuv
+PATTERN:  ibbbpbbbbp
+GOP_SIZE:  30
+SLICES PER FRAME:  1
+RANGE:  +/-10
+FULL SEARCH:  0
+PSEARCH:  LOGARITHMIC
+BSEARCH:  CROSS2
+QSCALE:  8 10 25
+REFERENCE FRAME:  ORIGINAL
+TIME COMPLETED:  Mon Aug  9 11:58:11 1993
+Total time:  37 seconds
+
+-------------------------
+*****I FRAME SUMMARY*****
+-------------------------
+  Blocks:      330     ( 94083 bits)     (  285 bpb)
+  Frames:        1     ( 94192 bits)     (94192 bpf)     (39.3% of total)
+  Compression:   21:1
+  Seconds:          0     (        0 spf)     (  2896457 bps)
+-------------------------
+*****P FRAME SUMMARY*****
+-------------------------
+  I Blocks:     91     ( 19292 bits)     (  212 bpb)
+  P Blocks:    563     ( 81101 bits)     (  144 bpb)
+  Skipped:       6
+  Frames:        2     (100616 bits)     (50308 bpf)     (41.9% of total)
+  Compression:   40:1
+  Seconds:          3     (        1 spf)     (  1131639 bps)
+-------------------------
+*****B FRAME SUMMARY*****
+-------------------------
+  I Blocks:      5     (   648 bits)     (  129 bpb)
+  B Blocks:   2072     ( 43514 bits)     (   21 bpb)
+  Skipped:     233
+  Frames:        7     ( 44952 bits)     ( 6421 bpf)     (18.7% of total)
+  Compression:  315:1
+  Seconds:         31     (        4 spf)     (   448424 bps)
+---------------------------------------------
+Total Compression:   84:1
+Total Frames Per Second:  0.270270
+Total Output Bit Rate (30 fps):  719856 bits/sec
+
+

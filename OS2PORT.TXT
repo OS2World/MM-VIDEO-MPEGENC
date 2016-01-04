@@ -1,0 +1,121 @@
+Porting of Berkeley mpeg_encode to 32 bit OS/2
+----------------------------------------------
+
+The ported source, ported executable and this file will be / have been
+sent to toe.cs.berkeley.edu. I also intend to upload this elsewhere.
+
+The target compiler was IBM C-Set++ 2.0. Optimisation was not turned on as in
+my experience this often breaks things.
+
+The supplied source references long filenames (>8.3) and so I truncated to
+the FAT 8.3 convention. Perhaps it would be better if the Berkeley people could
+use the 8.3 convention too.
+
+I always defined OS2, so that wherever I had to add a hack, I could use
+#ifdef OS2. Wherever I made a change, I put a comment with @@@ in it.
+The files os2port.h and os2port.c encompass any additional source required.
+
+I built all the code multithreaded (/Gm+). This was obviously not a requirement
+but is the way I build all my code. Single threaded librarys never seem to
+make a significant difference in performance.
+
+I wrote various makefile.os2's for pbmplus and the directories below it.
+I found I had to change MAKE variable $(INCLUDE) to another name (ie: $(INCL))
+so that ICC didn't get confused searching for system header files.
+
+for pbmplus/makefile.os2 I had to write out the makes for each of the 4 sub-
+directories in full, as shell 'foreach' type things can be done in OS/2 NMAKE.
+
+In libpbm1.c I had to ensure errno was correctly defined from errno.h, and not
+some assume extern statement in the code. In OS/2, using /Gm+ errno actually
+maps to a function which returns the correct errno for the current thread.
+
+Wherever I saw a fopen() call, I had to be sure either binary or ASCII was
+intended. The original authors always gave "r" or "w" although they could have
+aided portability by using "rb" etc. (on all systems I know the b is ignored).
+
+In pbmplus.h I define SYSV if OS2 is defined so that I get the right string
+functions etc.. I also found it best to use /Sa to force strict ANSI and
+get __STDC__ defined.
+
+OS/2 has no 'times' interface, so I fake it up in os2port.c.
+
+I compiled with no sockets/parallel compression options. However I found that
+in bitio.c, Bitio_WriteToSocket still referenced socket stuff. So I commented
+out the body of this function.
+
+popen() and pclose() do not exist in OS/2. Rather naff implementations can
+be found in os2port.c. I am not even sure they work properly. I have tried :-
+
+	INPUT_CONVERT gbmref * x.ppm && type x.ppm && del x.ppm
+
+(gbmref is a program that can read and write a wide variety of bitmap file
+types. Here the output format is PPM. gbmref does not write to stdout though).
+
+
+Suggested improvements
+----------------------
+
+Although the encoder appears to do an excellent job at encoding,
+architecturally it does not appear to be designed with software re-use in mind.
+
+Use 8.3 naming convention for files. Allows easier port to OS/2 and DOS.
+
+Use ANSI fully prototyped definitions everywhere. How many machines can you
+name having only K&R C compilers and not ANSI?
+
+Build a module that has an agreed simple interface that uses PBMPLUS to get
+the individual image bits and supplys them in a file format independent encoder
+suited format. Due to interface, other bitmap tools may now be substituted
+for PBMPLUS, such as my GBM, or libtiff.a, or fetch-data-from-memory stream,
+or whatever.
+
+Build encoder module, using above module to obtain uncompressed frames.
+Calls external functions to send data to output 'file' stream, that can now
+also be in memory.
+
+Make configuration of parameters via entrypoints into encoder module. Write
+seperate module to read .param file and call these entrypoints. Allows easy
+integration to flashy user interfaces to control these parameters, without
+having to knock up temporary .param files.
+
+Also, have statistics queryable from the encoder module and have seperate
+module to write summary to statistics file. Therefore can user GUI to display
+results instead, or can discard them if not interested.
+
+Finally, place encoder driver stuff (the rest) in main driving module with
+main() etc., and have this call the other modules. Also, only allow this
+module to issue an exit() call. Have all other module return error codes in
+error conditions, rather than bombing mid-function. This increases the
+encapsulation of the module.
+
+Perhaps each module could be a library with a single interface header.
+
+All of the above are obvious software engineering issues. I would try to do
+some of the above myself, only, hey, thats not my job... :-)
+
+Use #defines OPEN_READ_ASCII, OPEN_READ_BINARY as "r" "rb" on OS/2 and DOS,
+or "r" "r" on UNIX. Use these wherever fopen() is used.
+
+Add option to set amount of 'chugging messages' displayed as encode proceeds.
+They are very boring to the uninitiated. -quiet option?
+
+Give description in documentation on what is required to make a .mpg file that
+can be played by the Xing I-frame only player.
+
+
+Legal-junk
+----------
+
+This port was done in my own time with my own equiptment.
+It is nothing to do with IBM (despite my address quoted below being in IBM),
+or any other company.
+
+The basic code I started from may be "freely distributed", so are my
+porting changes, and therefore so is the final result.
+
+
+{{{ Andy Key
+
+Internet: ak@vnet.ibm.com			# Contract valid until Sept 94
+IBM-VNET: AKEY @ HVTVM5				# so addresses valid until then

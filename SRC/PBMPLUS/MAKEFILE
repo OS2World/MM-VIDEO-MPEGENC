@@ -1,0 +1,51 @@
+# Makefile for pbmplus tools.
+#
+# Copyright (C) 1989, 1991 by Jef Poskanzer.
+#
+# Permission to use, copy, modify, and distribute this software and its
+# documentation for any purpose and without fee is hereby granted, provided
+# that the above copyright notice appear in all copies and that both that
+# copyright notice and this permission notice appear in supporting
+# documentation.  This software is provided "as is" without express or
+# implied warranty.
+
+# CONFIGURE: gcc makes things go faster on some machines, but not everyone
+# has it.  Warning: do not use gcc's -finline-functions or -fstrength-reduce
+# flags, they can produce incorrect code.  (This is with gcc versions 1.35,
+# 1.36, and 1.37, later versions may fix these bugs.)  Also, on some systems
+# gcc can't compile pnmconvol - dunno why.  And on some systems you can't
+# use the -ansi flag, it gives compilation errors in <math.h>.
+CC =		cc
+#CC =		gcc
+#CC =		gcc -fcombine-regs -fpcc-struct-return
+#CC =		gcc -ansi -pedantic -fcombine-regs -fpcc-struct-return
+
+# CONFIGURE: cc flags go here.
+CFLAGS =	-O
+#CFLAGS =	-g
+#CFLAGS =	-g -O
+
+# CONFIGURE: ld flags go here.  Eunice users may want to use -noshare so that
+# the binaries can run standalone.
+LDFLAGS =	-s
+#LDFLAGS =	
+#LDFLAGS =	-noshare
+
+all:		lib
+
+# End of configurable definitions.
+
+SHELL =		/bin/sh
+MAKE =		make
+SUBDIRS =	pbm pgm ppm pnm
+
+lib:
+	for i in $(SUBDIRS) ; do \
+	    ( echo $$i ; cd $$i ; $(MAKE) $(MFLAGS) 'CC=$(CC)' 'CFLAGS=$(CFLAGS)' 'LDFLAGS=$(LDFLAGS)' lib; cd ..; rm -f lib$$i.a $$i.h; ln -s $$i/lib$$i.a .; ln -s $$i/$$i.h .); \
+	done
+
+clean:
+	-rm -f *.shar *.shar? art.* *.pure.a
+	for i in $(SUBDIRS) ; do \
+	    ( echo $$i ; rm -f lib$$i.a $$i.h; cd $$i ; $(MAKE) $(MFLAGS) clean ); \
+	done

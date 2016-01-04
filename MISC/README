@@ -1,0 +1,49 @@
+This directory contains source for various utility programs.
+To build everything, first edit the Makefile to include the appropriate
+Tcl/Tk libraries, and change anything you need to.  Then type 'make.'
+
+None of the programs do very much error checking, so beware.
+
+PROGRAM:	encode_sh
+USAGE:		encode_sh -f encode.tcl
+DESCRIPTION:	a very simple Tcl/Tk interface to the mpeg_encode program.
+		For it to work, mpeg_encode must be in your path.
+BUGS:  Only allows files from one directory.
+
+PROGRAM:	ppmtoyuv
+USAGE:		ppmtoyuv < input.ppm > output.yuv
+DESCRIPTION:	converts a PPM file to a YUV file (encoder format)
+
+PROGRAM:	blockppmtoyuv
+USAGE:		blockppmtoyuv base start end skip
+DESCRIPTION:	will ppmtoyuv all files baseN where N runs from start to end,
+		skipping by skip.  New files will end in .yuv.  Program
+		DELETES the original files.
+
+All of the following programs require a Parallax XVideo card to run:
+
+PROGRAM:	playone
+USAGE:		playone filename width height start end outbase [quality]
+DESCRIPTION:	converts an Xvideo JPEG movie file (filename) of given
+		(width, height) into a bunch of ppm files.  Only does the
+		frames numbered start to end (frames begin at 1).  Output
+		file names are outbaseN.ppm where N is the frame number.
+BUGS: may crash after 200 or 300 frames
+
+PROGRAM:	playskip
+USAGE:		playskip filename width height start nth outbase [quality]
+DESCRIPTION:	same as playone, except does every nth frame beginning with
+		start until the end of the movie.
+BUGS: may crash after 200 or 300 frames
+
+PROGRAM:	xvideotojpeg
+USAGE:		xvideotojpeg filename width height start end outbase [quality]
+DESCRIPTION:	same as playone, except instead of outputting ppm files,
+		outputs JPEG files.
+BUGS: may crash after 200 or 300 frames
+
+PROGRAM:	xvidtoyuv
+USAGE:		xvidtoyuv filename width height start nth outbase [quality]
+DESCRIPTION:	same as playskip, except instead of outputting ppm files,
+		outputs yuv files.
+BUGS: may crash after 200 or 300 frames

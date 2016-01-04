@@ -1,0 +1,58 @@
+This file describes how to install the Berkeley MPEG encoder.  Installation
+should be a quick and painless task.  Just do the following in order:
+
+    1)  The encoder uses the pbmplus library.  If your system already has
+    the files libpnm.a, libppm.a, libpgm.a, and libpbm.a, and the files
+    pbm.h, pgm.h, ppm.h, and pnm.h, then change the Makefile:  redefine
+    the variables PBMLIBDIR and PBMHDRDIR to point to the directories 
+    where those files reside.  If your system already has the files, 
+    then skip step 2, otherwise go to step 2.
+
+    2)  You may need to edit pbmplus/Makefile and pbmplus/pbmplus.h
+    to configure everything properly for your system.  As we ship things,
+    you shouldn't have to change anything for pbmplus to work properly
+    on a Sparc, HP, or DEC.  Type 'make' in the pbmplus directory to
+    create the appropriate libraries.
+
+    3)  If your machine does not have UNIX sockets, then you cannot use
+    the parallel version of the encoder.  Thus, you must edit the
+    Makefile, changing MP_PARALLEL_OBJS and MP_PARALLEL_SRCS.
+    Instead of parallel.c and parallel.o, they should be noparallel.c
+    and noparallel.o.
+	
+    4)  We assume that right shift corresponds to signed division by 2 with
+    rounding towards minus infinity.  This is correct for typical "arithmetic
+    shift" instructions that shift in copies of the sign bit.  But some
+    C compilers implement >> with an unsigned shift.  For these machines you
+    must define RIGHT_SHIFT_IS_UNSIGNED.  To do so, add
+    -DRIGHT_SHIFT_IS_UNSIGNED to your CFLAGS line.
+
+    5)  Edit the Makefile.  Set CC accordingly.  Set CFLAGS
+    accordingly.  Some sample CFLAGS lines for several different
+    compilers/machines are given in the Makefile.  If long's on your
+    machine are 32 bits but int's are NOT 32 bits, then you must include
+    the -DLONG_32 option in your CFLAGS line.  If your system does not
+    have the netinet/in.h header, then you must add either -DFORCE_BIG_ENDIAN
+    or -DFORCE_LITTLE_ENDIAN to the CFLAGS line (which you use depends on
+    your machine).
+
+    6)  Set the LIBS lines appropriately.  For most machines you don't need
+    to change this.  However, for some machines you'll need to include
+    additional libraries to use sockets.
+
+    7)  If you are using a NON-ANSI compiler, then your CFLAGS should
+    include -DNON_ANSI_COMPILER
+
+    8)  Type 'make clean'
+
+If all is well, you should get the executable file 'mpeg_encode.'  To
+test it, try 'make test.'  At the end of the test, it should say SUCCESS
+or FAILURE.  If it says FAILURE, please let us know!
+
+Note: if you get warnings about certain C library procedures not being
+defined before being called, that's not our fault.  Prototypes
+*should* exist in the appropriate system header files in /usr/include,
+but on some systems they don't.  None of this should affect the
+correctness of the program, but if you get tired of the warnings, you
+can probably stop them by setting PROTOFLAG = -DMISSING_PROTOTYPES in
+the Makefile.

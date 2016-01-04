@@ -1,0 +1,37 @@
+# Makefile for pbm tools.
+#
+# Copyright (C) 1989, 1991 by Jef Poskanzer.
+#
+# Permission to use, copy, modify, and distribute this software and its
+# documentation for any purpose and without fee is hereby granted, provided
+# that the above copyright notice appear in all copies and that both that
+# copyright notice and this permission notice appear in supporting
+# documentation.  This software is provided "as is" without express or
+# implied warranty.
+
+# Default values, usually overridden by top-level Makefile.
+
+INCLUDE =	-I..
+ALLCFLAGS =	$(CFLAGS) $(INCLUDE)
+LIBPBM =	libpbm.a
+DEFPBM =	pbm.h ../pbmplus.h
+
+lib:		$(LIBPBM)
+$(LIBPBM):	libpbm1.o libpbm2.o libpbm3.o libpbm4.o libpbm5.o
+	-rm $(LIBPBM)
+	ar rc $(LIBPBM) libpbm1.o libpbm2.o libpbm3.o libpbm4.o libpbm5.o
+	-ranlib $(LIBPBM)
+
+libpbm1.o:	$(DEFPBM) ../version.h libpbm.h libpbm1.c
+	$(CC) $(ALLCFLAGS) -c libpbm1.c
+libpbm2.o:	$(DEFPBM) libpbm.h libpbm2.c
+	$(CC) $(ALLCFLAGS) -c libpbm2.c
+libpbm3.o:	$(DEFPBM) libpbm.h libpbm3.c
+	$(CC) $(ALLCFLAGS) -c libpbm3.c
+libpbm4.o:	$(DEFPBM) libpbm.h libpbm4.c
+	$(CC) $(ALLCFLAGS) -c libpbm4.c
+libpbm5.o:	$(DEFPBM) pbmfont.h libpbm5.c
+	$(CC) $(ALLCFLAGS) -c libpbm5.c
+
+clean:
+	rm -f *.o *.a *~

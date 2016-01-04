@@ -1,0 +1,60 @@
+# Makefile for pnm tools.
+#
+# Copyright (C) 1989, 1991 by Jef Poskanzer.
+#
+# Permission to use, copy, modify, and distribute this software and its
+# documentation for any purpose and without fee is hereby granted, provided
+# that the above copyright notice appear in all copies and that both that
+# copyright notice and this permission notice appear in supporting
+# documentation.  This software is provided "as is" without express or
+# implied warranty.
+
+PPMDIR =	../ppm
+INCLUDEPPM =	-I$(PPMDIR)
+LIBPPM =	$(PPMDIR)/libppm.a
+DEFPPM =	$(PPMDIR)/ppm.h
+DEFLIBPPM =	$(PPMDIR)/libppm.h
+
+PGMDIR =	../pgm
+INCLUDEPGM =	-I$(PGMDIR)
+LIBPGM =	$(PGMDIR)/libpgm.a
+DEFPGM =	$(PGMDIR)/pgm.h
+DEFLIBPGM =	$(PGMDIR)/libpgm.h
+
+PBMDIR =	../pbm
+INCLUDEPBM =	-I$(PBMDIR)
+LIBPBM =	$(PBMDIR)/libpbm.a
+DEFPBM =	$(PBMDIR)/pbm.h ../pbmplus.h
+DEFLIBPBM =	$(PBMDIR)/libpbm.h
+
+INCLUDE =	-I.. $(INCLUDEPPM) $(INCLUDEPGM) $(INCLUDEPBM)
+ALLCFLAGS =	$(CFLAGS) $(INCLUDE)
+LIBPNM =	libpnm.a
+
+all: lib
+
+$(LIBPBM):
+	cd $(PBMDIR) ; make lib
+$(LIBPGM) FOO:
+	cd $(PGMDIR) ; make lib
+$(LIBPPM) BAR:
+	cd $(PPMDIR) ; make lib
+lib:		$(LIBPNM)
+$(LIBPNM):	libpnm1.o libpnm2.o libpnm3.o libpnm4.o
+	-rm $(LIBPNM)
+	ar rc $(LIBPNM) libpnm1.o libpnm2.o libpnm3.o libpnm4.o
+	-ranlib $(LIBPNM)
+
+libpnm1.o:	pnm.h $(DEFPPM) $(DEFPGM) $(DEFPBM) libpnm1.c
+	$(CC) $(ALLCFLAGS) -c libpnm1.c
+libpnm2.o:	pnm.h $(DEFPPM) $(DEFPGM) $(DEFPBM) libpnm2.c $(DEFLIBPPM) \
+		$(DEFLIBPGM) $(DEFLIBPBM)
+	$(CC) $(ALLCFLAGS) -c libpnm2.c
+libpnm3.o:	pnm.h $(DEFPPM) $(DEFPGM) $(DEFPBM) libpnm3.c $(DEFLIBPPM) \
+		$(DEFLIBPGM) $(DEFLIBPBM)
+	$(CC) $(ALLCFLAGS) -c libpnm3.c
+libpnm4.o:	pnm.h $(DEFPPM) $(DEFPGM) $(DEFPBM) rast.h libpnm4.c
+	$(CC) $(ALLCFLAGS) -c libpnm4.c
+
+clean:
+	rm -f *.o *.a *~

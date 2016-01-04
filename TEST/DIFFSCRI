@@ -1,0 +1,29 @@
+#
+# script to tell if two stat files are same except times
+#
+# NOTE:  if this script doesn't work, then basically all you need to know
+# is that the stat files should be the same except possibly for the times.
+# so the /tmp/blockbar below should be empty if the test succeeded, and non-
+# empty if it failed
+#
+
+rm -f /tmp/foobar
+rm -f /tmp/blockbar
+
+diff $1 $2 > /tmp/foobar
+
+# /tmp/foobar must exist, since starting times will be different
+
+egrep Blocks /tmp/foobar > /tmp/blockbar
+
+# /tmp/blockbar may or may not exist
+if ( -z /tmp/blockbar ) then
+	diff $3 $4 > /tmp/foobar.mpg
+	if ( -z /tmp/foobar.mpg ) then
+		echo "SUCCESS."
+	else
+		echo "FAILURE! (different output -- probably endian bug).  Please send bug report."
+	endif
+else
+	echo "FAILURE! (different exection).  Please send bug report."
+endif

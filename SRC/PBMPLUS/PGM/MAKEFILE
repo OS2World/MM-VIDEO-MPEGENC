@@ -1,0 +1,38 @@
+# Makefile for pgm tools.
+#
+# Copyright (C) 1989, 1991 by Jef Poskanzer.
+#
+# Permission to use, copy, modify, and distribute this software and its
+# documentation for any purpose and without fee is hereby granted, provided
+# that the above copyright notice appear in all copies and that both that
+# copyright notice and this permission notice appear in supporting
+# documentation.  This software is provided "as is" without express or
+# implied warranty.
+
+PBMDIR =	../pbm
+INCLUDEPBM =	-I$(PBMDIR)
+LIBPBM =	$(PBMDIR)/libpbm.a
+DEFPBM =	$(PBMDIR)/pbm.h ../pbmplus.h
+DEFLIBPBM =	$(PBMDIR)/libpbm.h
+
+INCLUDE =	-I.. $(INCLUDEPBM)
+ALLCFLAGS =	$(CFLAGS) $(INCLUDE)
+LIBPGM =	libpgm.a
+
+all: lib
+
+$(LIBPBM):
+	cd $(PBMDIR) ; make lib
+lib:		$(LIBPGM)
+$(LIBPGM):	libpgm1.o libpgm2.o
+	-rm $(LIBPGM)
+	ar rc $(LIBPGM) libpgm1.o libpgm2.o
+	-ranlib $(LIBPGM)
+
+libpgm1.o:	pgm.h $(DEFPBM) libpgm.h libpgm1.c
+	$(CC) $(ALLCFLAGS) -c libpgm1.c
+libpgm2.o:	pgm.h $(DEFPBM) libpgm.h libpgm2.c $(DEFLIBPBM)
+	$(CC) $(ALLCFLAGS) -c libpgm2.c
+
+clean:
+	rm -f *.o *.a *~

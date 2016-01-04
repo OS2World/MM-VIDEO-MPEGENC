@@ -1,0 +1,43 @@
+Tips on Encoding
+----------------
+
+We have done some initial tests on encoding using different parameters.
+Here's a brief summary of what we've found, along with some suggestions.
+
+Subsample search gives almost identical compression to exhaustive search,
+and is somewhat faster (how much faster varies depending on other parameters).
+This seems to suggest that subsample search should almost always be used
+in lieu of exhaustive search.  On the other hand, two-level search gives
+results similar to half-pixel exhaustive and subsample search, and is
+faster than both.  So two-level search is a good alternative.
+
+All of those search routines give slightly better results than logarithmic
+search, but at a much higher speed cost.  Which you use depends on how
+much time you're willing to trade off for compression.
+
+An important observation is that half-pixel search only increases the time
+for logarithmic search slightly, whereas it increases it dramatically for
+subsample/exhaustive search.  Half pixel does give slight improvement in
+compression.  Therefore, one rule of thumb is if you're using logarithmic
+search, it definitely makes sense to do a half-pixel search.  On the other
+hand, if you're using subsample or exhaustive search, then it doesn't make
+sense unless you're willing to wait a long, long time -- a better alternative
+is to use two-level search (which does the exhaustive full-pixel search, then
+a local half-pixel search).
+
+Cross-2 B-frame search gives slightly better compression at the cost of
+roughly half the speed.
+
+The search technique with a good tradeoff of compression ratio/speed seems
+to be logarithmic search with cross-2 B-frame search, original frame as
+reference, half-pixel search, with a range of about 10 pixels.  The range
+depends on the image, though, so you might want to experiment on a few
+representative frames before encoding the entire sequence.  These settings
+are in the default parameters file.
+
+One important note about this discussion:  All of the above is irrespective
+of quality.  We are beginning to do experiments involving quality, and
+preliminary results seem to suggest that the most notable differences in
+quality occur between using original/decoded frames as reference frames, and
+between half/full pixel motion vectors.  More detailed results will be
+forthcoming.

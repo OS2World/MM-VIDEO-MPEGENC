@@ -1,0 +1,62 @@
+# Makefile for ppm tools for 32 bit OS/2.
+#
+# Copyright (C) 1989, 1991 by Jef Poskanzer.
+# Modified for 32 bit OS/2 by Andy Key
+#
+# Permission to use, copy, modify, and distribute this software and its
+# documentation for any purpose and without fee is hereby granted, provided
+# that the above copyright notice appear in all copies and that both that
+# copyright notice and this permission notice appear in supporting
+# documentation.  This software is provided "as is" without express or
+# implied warranty.
+
+PGMDIR =	../pgm
+INCLUDEPGM =	/I$(PGMDIR)
+LIBPGM =	$(PGMDIR)/pgm.lib
+DEFPGM =	$(PGMDIR)/pgm.h
+DEFLIBPGM =	$(PGMDIR)/libpgm.h
+
+PBMDIR =	../pbm
+INCLUDEPBM =	/I$(PBMDIR)
+LIBPBM =	$(PBMDIR)/pbm.lib
+DEFPBM =	$(PBMDIR)/pbm.h ../pbmplus.h
+DEFLIBPBM =	$(PBMDIR)/libpbm.h
+
+INCL =		/I.. $(INCLUDEPGM) $(INCLUDEPBM)
+ALLCFLAGS =	$(CFLAGS) $(INCL)
+LIBPPM =	ppm.lib
+
+all:		lib
+
+$(LIBPBM):
+		(cd $(PBMDIR) && $(MAKE) lib)
+
+$(LIBPGM):
+		(cd $(PGMDIR) && $(MAKE) lib)
+
+lib:		$(LIBPPM)
+
+$(LIBPPM):	libppm1.obj libppm2.obj libppm3.obj libppm4.obj libppm5.obj
+		-del $(LIBPPM)
+		lib /NOLOGO $(LIBPPM) \
+			+libppm1.obj +libppm2.obj +libppm3.obj \
+			+libppm4.obj +libppm5.obj;
+
+libppm1.obj:	ppm.h $(DEFPGM) $(DEFPBM) libppm.h libppm1.c
+		$(CC) $(ALLCFLAGS) /C+ libppm1.c
+
+libppm2.obj:	ppm.h $(DEFPGM) $(DEFPBM) libppm.h libppm2.c $(DEFLIBPGM) \
+		$(DEFLIBPBM)
+		$(CC) $(ALLCFLAGS) /C+ libppm2.c
+
+libppm3.obj:	ppm.h $(DEFPGM) $(DEFPBM) ppmcmap.h libppm.h libppm3.c
+		$(CC) $(ALLCFLAGS) /C+ libppm3.c
+
+libppm4.obj:	ppm.h $(DEFPGM) $(DEFPBM) libppm4.c
+		$(CC) $(ALLCFLAGS) /C+ libppm4.c
+
+libppm5.obj:	ppm.h $(DEFPGM) $(DEFPBM) ppmdraw.h libppm5.c
+		$(CC) $(ALLCFLAGS) /C+ libppm5.c
+
+clean:
+		-del *.obj *.lib
